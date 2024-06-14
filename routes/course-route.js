@@ -7,6 +7,7 @@ router.use((req, res, next) => {
   next();
 });
 
+// 獲得系統中的所有課程
 router.get("/", async (req, res) => {
   try {
     let courseFound = await Course.find({})
@@ -42,7 +43,8 @@ router.get("/instructor/:_instructor_id", async (req, res) => {
 router.get("/findByName/:name", async (req, res) => {
   let { name } = req.params;
   try {
-    let courseFound = await Course.find({ title: name })
+    let courseFound = await Course.find
+      .indexOf({ title: name })
       .populate("instructor", ["email", "username"])
       .exec();
     return res.send(courseFound);

@@ -11,7 +11,8 @@ const cors = require("cors");
 
 // 連結mongoDB
 mongoose
-  .connect(process.env.MONGODB_CONNECTION)
+  // .connect(process.env.MONGODB_CONNECTION)
+  .connect("mongodb://localhost:27017/mernDB")
   .then(() => {
     console.log("Connecting to mongoDB...");
   })

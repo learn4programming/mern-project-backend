@@ -6,18 +6,18 @@ const userSchema = new Schema({
   username: {
     type: String,
     required: true,
-    mixlength: 3,
+    minlength: 6,
     maxlength: 50,
   },
   email: {
     type: String,
     required: true,
-    mixlength: 6,
-    maxlength: 50,
   },
   password: {
     type: String,
     required: true,
+    minlength: 6,
+    maxlength: 50,
   },
   role: {
     type: String,

@@ -17,6 +17,7 @@ router.get("/testAPI", (req, res) => {
 router.post("/register", async (req, res) => {
   // 確認註冊資料是否符合格式
   let { error } = registerValidation(req.body);
+  console.log(error.details[0].message);
   if (error) return res.status(400).send(error.details[0].message);
 
   // 確認信箱是否註冊過
