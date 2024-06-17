@@ -43,8 +43,9 @@ router.get("/instructor/:_instructor_id", async (req, res) => {
 router.get("/findByName/:name", async (req, res) => {
   let { name } = req.params;
   try {
-    let courseFound = await Course.find
-      .indexOf({ title: name })
+    let courseFound = await Course.find({
+      title: { $regex: name, $options: "i" },
+    })
       .populate("instructor", ["email", "username"])
       .exec();
     return res.send(courseFound);
@@ -128,10 +129,45 @@ router.patch("/:_id", async (req, res) => {
 // 讓學生透過id來註冊新課程
 router.post("/enroll/:_id", async (req, res) => {
   let { _id } = req.params;
-  let course = await Course.findOne({ _id });
-  course.students.push(req.user._id);
-  await course.save();
-  res.send("註冊完成");
+  try {
+    let course = await Course.findOne({ _id });
+
+    if (course.students.includes(req.user._id)) {
+      return res.status(400).send("您已經註冊過該課程。");
+    } else {
+      course.students.push(req.user._id);
+      await course.save();
+      res.send("註冊完成");
+    }
+  } catch (error) {
+    return res.status(500).send(e);
+  }
+});
+
+// 讓學生透過id取消註冊課程
+router.post("/unenroll/:_id", async (req, res) => {
+  let { _id } = req.params;
+  try {
+    let course = await Course.findOne({ _id });
+    if (!course) {
+      return res.status(404).send("找不到課程");
+    }
+
+    // 檢查學生是否已經註冊過該課程
+    if (!course.students.includes(req.user._id)) {
+      return res.status(400).send("您尚未註冊該課程");
+    }
+
+    // 移除學生
+    course.students = course.students.filter(
+      (studentId) => studentId.toString() !== req.user._id.toString()
+    );
+    await course.save();
+    res.send("取消註冊成功");
+  } catch (e) {
+    console.error("Error unenrolling from course:", e);
+    return res.status(500).send(e);
+  }
 });
 
 // 刪除課程
