@@ -70,10 +70,10 @@ const courseValidation = (data) => {
       "string.max": "描述最多可以有50個字元",
       "any.required": "描述是必填項",
     }),
-    price: Joi.number().min(10).max(9999).required().messages({
+    price: Joi.number().min(1).max(9999).required().messages({
       "number.base": "價格必須是數字",
-      "number.min": "價格最少要有10元",
-      "number.max": "價格最多可以有9999元",
+      "number.min": "價格不得低於1元",
+      "number.max": "價格上限為9999元",
       "any.required": "價格是必填項",
     }),
   });

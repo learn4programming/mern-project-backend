@@ -171,19 +171,19 @@ router.post("/unenroll/:_id", async (req, res) => {
 });
 
 // 刪除課程
-router.delete("/:_id", async (req, res) => {
+router.post("/delete/:_id", async (req, res) => {
   let { _id } = req.params;
 
   // 確認課程存在
   try {
-    let courseFound = await Course.find({ _id }).exec();
+    let courseFound = await Course.findOne({ _id }).exec();
     if (!courseFound) {
-      console.log(courseFound);
       return res.status(400).send("找不到課程，無法刪除課程。");
     }
 
     //使用者必須是此課程講師，才能刪除課程
     if (courseFound.instructor.equals(req.user._id)) {
+      console.log("講師ID匹配，删除課程:", _id);
       await Course.deleteOne({ _id }).exec();
       return res.send("課程已被刪除");
     } else {
